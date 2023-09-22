@@ -4,7 +4,8 @@ from langchain.chains import RetrievalQA
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.vectorstores import Chroma
-from langchain.llms import GPT4All, LlamaCpp
+from langchain.llms import GPT4All, LlamaCpp, HuggingFacePipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 import chromadb
 import os
 import argparse
@@ -40,6 +41,14 @@ def main():
             llm = LlamaCpp(model_path=model_path, max_tokens=model_n_ctx, n_batch=model_n_batch, callbacks=callbacks, verbose=False)
         case "GPT4All":
             llm = GPT4All(model=model_path, max_tokens=model_n_ctx, backend='gptj', n_batch=model_n_batch, callbacks=callbacks, verbose=False)
+        case "HG":
+            model_id = "dbmdz/german-gpt2" #"gpt2"
+            tokenizer = AutoTokenizer.from_pretrained(model_id)
+            model = AutoModelForCausalLM.from_pretrained(model_id)
+            pipe = pipeline(
+                "text-generation", model=model, tokenizer=tokenizer, max_new_tokens=128
+            )
+            llm = HuggingFacePipeline(pipeline=pipe)
         case _default:
             # raise exception if model_type is not supported
             raise Exception(f"Model type {model_type} is not supported. Please choose one of the following: LlamaCpp, GPT4All")

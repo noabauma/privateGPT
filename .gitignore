@@ -7,6 +7,8 @@ models/
 # Local Chroma db
 .chroma/
 db/
+source_documents/
+source_documents_**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
