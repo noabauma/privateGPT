@@ -6,6 +6,7 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.vectorstores import Chroma
 from langchain.llms import GPT4All, LlamaCpp, HuggingFacePipeline
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+import torch
 import chromadb
 import os
 import argparse
@@ -42,12 +43,19 @@ def main():
         case "GPT4All":
             llm = GPT4All(model=model_path, max_tokens=model_n_ctx, backend='gptj', n_batch=model_n_batch, callbacks=callbacks, verbose=False)
         case "HG":
-            model_id = "dbmdz/german-gpt2" #"gpt2"
-            tokenizer = AutoTokenizer.from_pretrained(model_id)
-            model = AutoModelForCausalLM.from_pretrained(model_id)
+            model = "ai-forever/mGPT" #"tiiuae/falcon-7b"
+            tokenizer = AutoTokenizer.from_pretrained(model)
+
             pipe = pipeline(
-                "text-generation", model=model, tokenizer=tokenizer, max_new_tokens=128
+                "text-generation",
+                model=model,
+                tokenizer=tokenizer,
+                #torch_dtype=torch.bfloat16,
+                trust_remote_code=True,
+                device_map="auto",
+                max_new_tokens=128,
             )
+
             llm = HuggingFacePipeline(pipeline=pipe)
         case _default:
             # raise exception if model_type is not supported
