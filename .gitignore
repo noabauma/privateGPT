@@ -7,8 +7,12 @@ models/
 # Local Chroma db
 .chroma/
 db/
+
 source_documents/
 source_documents_**
+
+persist_directory/chroma.sqlite
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -171,5 +175,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# vscode
 .vscode/launch.json
-persist_directory/chroma.sqlite3
