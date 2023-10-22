@@ -43,14 +43,14 @@ def main():
         case "GPT4All":
             llm = GPT4All(model=model_path, max_tokens=model_n_ctx, backend='gptj', n_batch=model_n_batch, callbacks=callbacks, verbose=False)
         case "HG":
-            model = "ai-forever/mGPT" #"tiiuae/falcon-7b"
+            model = "tiiuae/falcon-7b" #"ai-forever/mGPT"
             tokenizer = AutoTokenizer.from_pretrained(model)
 
             pipe = pipeline(
                 "text-generation",
                 model=model,
                 tokenizer=tokenizer,
-                #torch_dtype=torch.bfloat16,
+                torch_dtype=torch.bfloat16,
                 trust_remote_code=True,
                 device_map="auto",
                 max_new_tokens=128,
